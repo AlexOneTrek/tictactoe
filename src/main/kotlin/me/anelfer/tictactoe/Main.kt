@@ -13,10 +13,13 @@ class Main : Application()
     val minW = 300.0
 
     override fun start(stage: Stage) {
-        val canvas = ResizableCanvas()
+        val lg = LogicGame()
+        val canvas = ResizableCanvas(lg)
         val pane = Pane()
-        val lg = LogicGame(canvas)
-        lg.ClickOnSquare(pane)
+
+        pane.setOnMouseClicked{ event ->
+            lg.ClickOnSquare(event, canvas)
+        }
 
         stage.title = "TicTacToe"
         stage.setHeight(600.0)

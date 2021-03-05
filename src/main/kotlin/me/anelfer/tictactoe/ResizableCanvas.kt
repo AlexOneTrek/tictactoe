@@ -3,19 +3,21 @@ package me.anelfer.tictactoe
 import javafx.beans.Observable
 import javafx.scene.canvas.Canvas
 import javafx.scene.paint.Color
+import sun.rmi.runtime.Log
 
-class ResizableCanvas : Canvas() {
+class ResizableCanvas(logicGame: LogicGame) : Canvas() {
     var left: Double = 0.0
     var right: Double = 0.0
     var top: Double = 0.0
     var bottom: Double = 0.0
     var sqLen: Double = 0.0
 
-    private fun draw() {
+    val gc = graphicsContext2D
+    val lg = logicGame
+
+    fun draw() {
         val width = width
         val height = height
-        val gc = graphicsContext2D
-
         gc.stroke = Color.BLACK
         gc.clearRect(0.0, 0.0, width, height)
         gc.lineWidth = 5.0
@@ -95,13 +97,72 @@ class ResizableCanvas : Canvas() {
             gc.strokeLine(0.0, 2.0/3 * square, width, 2.0/3 * square)
             gc.strokeLine(0.0, height, width, height)
         }
-
 //            //center line
 //            gc.stroke = Color.RED
 //            gc.strokeLine(width/2, 0.0, width/2, height)
 //            gc.strokeLine(0.0, height/2, width, height/2)
+        drawFigure()
 
+    }
 
+    fun drawCross(clickX: Double, clickY: Double){
+        gc.strokeLine(
+            clickX - sqLen / 4,
+            clickY - sqLen / 4,
+            clickX + sqLen / 4,
+            clickY + sqLen / 4
+        )
+        gc.strokeLine(
+            clickX + sqLen / 4,
+            clickY - sqLen / 4,
+            clickX - sqLen / 4,
+            clickY + sqLen / 4
+        )
+    }
+
+    fun drawToe(clickX: Double, clickY: Double){
+        gc.strokeOval(
+            clickX - sqLen / 4,
+            clickY - sqLen / 4,
+            sqLen / 2,
+            sqLen / 2)
+    }
+
+    fun drawFigure(){
+        for (i in 1..9){
+            if (lg.playerFieldMap[i] == 0){
+                val row = (i + 2) / 3
+                val column = (-3 * row) + 3 + i
+                println("i " + i)
+                println("Field " + lg.playerFieldMap)
+                gc.strokeOval(
+                    left + (sqLen * column) - 0.75 * sqLen ,
+                    top + (sqLen * (row - 1)) + 0.25 * sqLen ,
+                    sqLen / 2,
+                    sqLen / 2
+                )
+
+                println("row: " + row)
+                println("column: " + column)
+            }else if (lg.playerFieldMap[i] == 1){
+                val row = (i + 2) / 3
+                val column = (-3 * row) + 3 + i
+
+                gc.strokeLine(
+                    left + (sqLen * column) - 0.75 * sqLen,
+                    top + (sqLen * (row - 1)) + 0.25 * sqLen,
+                    (left + (sqLen * column) - 0.75 * sqLen) + sqLen / 2,
+                    (top + (sqLen * (row - 1)) + 0.25 * sqLen) + sqLen / 2
+                )
+                gc.strokeLine(
+                    (left + (sqLen * column) - 0.75 * sqLen) + sqLen / 2,
+                    top + (sqLen * (row - 1)) + 0.25 * sqLen,
+                    left + (sqLen * column) - 0.75 * sqLen,
+                    (top + (sqLen * (row - 1)) + 0.25 * sqLen) + sqLen / 2
+                )
+
+            }
+        }
     }
 
     init {
