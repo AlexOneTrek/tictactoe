@@ -4,8 +4,6 @@ import javafx.application.Application
 import javafx.scene.Scene
 import javafx.stage.Stage
 import javafx.scene.layout.Pane
-import tornadofx.getProperty
-import kotlin.reflect.typeOf
 
 class Main : Application()
 {
@@ -18,7 +16,9 @@ class Main : Application()
         val pane = Pane()
 
         pane.setOnMouseClicked{ event ->
-            lg.ClickOnSquare(event, canvas)
+            if (lg.victoryFlag == 0){
+                lg.ClickOnSquare(event, canvas)
+            }
         }
 
         stage.title = "TicTacToe"
@@ -35,7 +35,6 @@ class Main : Application()
 
         stage.scene = Scene(pane)
         stage.show()
-
     }
 
     companion object {

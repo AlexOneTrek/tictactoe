@@ -3,7 +3,6 @@ package me.anelfer.tictactoe
 import javafx.beans.Observable
 import javafx.scene.canvas.Canvas
 import javafx.scene.paint.Color
-import sun.rmi.runtime.Log
 
 class ResizableCanvas(logicGame: LogicGame) : Canvas() {
     var left: Double = 0.0
@@ -97,12 +96,11 @@ class ResizableCanvas(logicGame: LogicGame) : Canvas() {
             gc.strokeLine(0.0, 2.0/3 * square, width, 2.0/3 * square)
             gc.strokeLine(0.0, height, width, height)
         }
-//            //center line
-//            gc.stroke = Color.RED
-//            gc.strokeLine(width/2, 0.0, width/2, height)
-//            gc.strokeLine(0.0, height/2, width, height/2)
-        drawFigure()
 
+        drawFigure()
+        if (lg.victoryFlag == 1){
+            victoryLine(lg.victoryNumField)
+        }
     }
 
     fun drawCross(clickX: Double, clickY: Double){
@@ -130,20 +128,15 @@ class ResizableCanvas(logicGame: LogicGame) : Canvas() {
 
     fun drawFigure(){
         for (i in 1..9){
-            if (lg.playerFieldMap[i] == 0){
+            if (lg.playerFieldMap[i] == -1){
                 val row = (i + 2) / 3
                 val column = (-3 * row) + 3 + i
-                println("i " + i)
-                println("Field " + lg.playerFieldMap)
                 gc.strokeOval(
                     left + (sqLen * column) - 0.75 * sqLen ,
                     top + (sqLen * (row - 1)) + 0.25 * sqLen ,
                     sqLen / 2,
                     sqLen / 2
                 )
-
-                println("row: " + row)
-                println("column: " + column)
             }else if (lg.playerFieldMap[i] == 1){
                 val row = (i + 2) / 3
                 val column = (-3 * row) + 3 + i
@@ -162,6 +155,59 @@ class ResizableCanvas(logicGame: LogicGame) : Canvas() {
                 )
 
             }
+        }
+    }
+
+    fun victoryLine(victoryNumField: MutableList<Int>){
+        gc.stroke = Color.CORAL
+        var rowF = 0
+        var columnF = 0
+        var columnS = 0
+        var rowS = 0
+
+        for (i in 0..2){
+            println(victoryNumField[i])
+
+            if (i == 0){
+                rowF = (victoryNumField[i] + 2) / 3
+                columnF = (-3 * rowF) + 3 + victoryNumField[i]
+            } else if (i == 2){
+                rowS = (victoryNumField[i] + 2) / 3
+                columnS = (-3 * rowS) + 3 + victoryNumField[i]
+            }
+        }
+
+        if (columnF == columnS){
+            gc.strokeLine(
+                left + ((sqLen * columnF) - (sqLen/2)) ,
+                top,
+                left + ((sqLen * columnF) - (sqLen/2)) ,
+                bottom
+            )
+        } else if (rowF == rowS){
+            gc.strokeLine(
+                left,
+                top + ((sqLen * rowF) - (sqLen/2)),
+                right,
+                top + ((sqLen * rowF) - (sqLen/2))
+            )
+        } else{
+            if (columnF == 1){
+                gc.strokeLine(
+                    left + 2,
+                    top + 2,
+                    right - 2,
+                    bottom - 2
+                )
+            } else if (columnF == 3){
+                gc.strokeLine(
+                    right - 2,
+                    top + 2,
+                    left + 2,
+                    bottom - 2
+                )
+            }
+
         }
     }
 
