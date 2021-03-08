@@ -63,8 +63,6 @@ class LogicGame{
     }
 
     fun detectVictory(cnvs: ResizableCanvas) {
-        println(playerFieldMap)
-
         val victorySum: MutableList<Int> = mutableListOf(0, 0, 0, 0, 0, 0, 0, 0)
         val victoryCell: MutableList<MutableList<Int>> = mutableListOf(
             mutableListOf(),
