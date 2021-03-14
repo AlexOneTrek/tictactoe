@@ -2,6 +2,7 @@ package me.anelfer.tictactoe
 
 import javafx.application.Application
 import javafx.scene.Scene
+import javafx.scene.control.Button
 import javafx.stage.Stage
 import javafx.scene.layout.Pane
 
@@ -14,10 +15,18 @@ class Main : Application()
         val lg = LogicGame()
         val canvas = ResizableCanvas(lg)
         val pane = Pane()
+        val btn = Button("Game over")
 
         pane.setOnMouseClicked{ event ->
             if (lg.victoryFlag == 0){
                 lg.ClickOnSquare(event, canvas)
+            }
+            if (lg.victoryFlag == 1){
+                btn.setOnAction {
+                    lg.restartGame(canvas)
+                    pane.children.remove(btn)
+                }
+                pane.children.add(btn)
             }
         }
 

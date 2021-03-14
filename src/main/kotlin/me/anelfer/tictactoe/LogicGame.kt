@@ -74,6 +74,7 @@ class LogicGame{
             mutableListOf(),
             mutableListOf()
         )
+
         for (i in 1..9){
             // Sum row
             if (i < 4){
@@ -124,6 +125,30 @@ class LogicGame{
                 cnvs.victoryLine(victoryNumField)
             }
         }
+
+        if (playerFieldMap.values.all { it != 0 }){
+            victoryFlag = 1
+            println("FULL / DRAW")
+        }
+
     }
 
+    fun restartGame(cnvs: ResizableCanvas){
+        playerFieldMap = mutableMapOf(
+            1 to 0,
+            2 to 0,
+            3 to 0,
+            4 to 0,
+            5 to 0,
+            6 to 0,
+            7 to 0,
+            8 to 0,
+            9 to 0
+        )
+        crossOrToe = 0
+        victoryFlag = 0
+        victoryNumField = mutableListOf()
+
+        cnvs.draw()
+    }
 }

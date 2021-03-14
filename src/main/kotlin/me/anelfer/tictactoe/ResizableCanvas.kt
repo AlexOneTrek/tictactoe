@@ -166,8 +166,6 @@ class ResizableCanvas(logicGame: LogicGame) : Canvas() {
         var rowS = 0
 
         for (i in 0..2){
-            println(victoryNumField[i])
-
             if (i == 0){
                 rowF = (victoryNumField[i] + 2) / 3
                 columnF = (-3 * rowF) + 3 + victoryNumField[i]
