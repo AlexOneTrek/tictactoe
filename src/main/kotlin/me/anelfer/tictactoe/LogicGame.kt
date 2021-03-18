@@ -2,6 +2,7 @@ package me.anelfer.tictactoe
 
 import javafx.scene.input.MouseEvent
 import kotlin.math.floor
+import kotlin.random.Random
 
 class LogicGame{
     var playerFieldMap: MutableMap<Int, Int> = mutableMapOf(
@@ -18,6 +19,7 @@ class LogicGame{
     var crossOrToe = 0 //0 = 0 , 1 = X
     var victoryFlag = 0
     var victoryNumField: MutableList<Int> = mutableListOf()
+    var modeGame = -1 // 0 - human vs human, 1 - human vs human, 3 - bot vs bot
 
     fun ClickOnSquare(event: MouseEvent, cnvs: ResizableCanvas){
         if (event.sceneX >= cnvs.left &&
@@ -41,19 +43,37 @@ class LogicGame{
                 for ( i in 1..3){
                     for (j in 1..3){
                         if (row == i && column == j){
-                            val clickX = (cnvs.left + (j * cnvs.sqLen)) - cnvs.sqLen / 2
-                            val clickY = (cnvs.top + (i * cnvs.sqLen)) - cnvs.sqLen / 2
-
-                            if (crossOrToe == 0){
-                                cnvs.drawToe(clickX, clickY)
-                                crossOrToe = 1 - crossOrToe
-                                playerFieldMap[numField] = -1
-                                detectVictory(cnvs)
-                            }else{
-                                cnvs.drawCross(clickX, clickY)
-                                crossOrToe = 1 - crossOrToe
-                                playerFieldMap[numField] = 1
-                                detectVictory(cnvs)
+                            if (modeGame == 0){
+                                if (crossOrToe == 0){
+                                    cnvs.drawToe(numField)
+                                    crossOrToe = 1 - crossOrToe
+                                    playerFieldMap[numField] = -1
+                                    detectVictory(cnvs)
+                                }
+                                else{
+                                    cnvs.drawCross(numField)
+                                    crossOrToe = 1 - crossOrToe
+                                    playerFieldMap[numField] = 1
+                                    detectVictory(cnvs)
+                                }
+                            }
+                            else if (modeGame == 1){
+                                if (crossOrToe == 0){
+                                    cnvs.drawToe(numField)
+                                    crossOrToe = 1 - crossOrToe
+                                    playerFieldMap[numField] = -1
+                                    detectVictory(cnvs)
+                                }
+                                else{
+                                    botGame(cnvs)
+                                    crossOrToe = 1 - crossOrToe
+                                    detectVictory(cnvs)
+                                }
+                            } else if (modeGame == 3) {
+                                while (victoryFlag != 1){
+                                    botVsbot(cnvs)
+                                    Thread.sleep(1000)
+                                }
                             }
                         }
                     }
@@ -125,10 +145,8 @@ class LogicGame{
                 cnvs.victoryLine(victoryNumField)
             }
         }
-
         if (playerFieldMap.values.all { it != 0 }){
             victoryFlag = 1
-            println("FULL / DRAW")
         }
 
     }
@@ -150,5 +168,42 @@ class LogicGame{
         victoryNumField = mutableListOf()
 
         cnvs.draw()
+    }
+
+    fun botGame(cnvs: ResizableCanvas){
+        val randomInt = Random.nextInt(0, 8)
+        println(randomInt)
+        println(playerFieldMap)
+        if (playerFieldMap[randomInt] == 0){
+            playerFieldMap[randomInt] = 1
+            cnvs.drawCross(randomInt)
+        } else{
+            botGame(cnvs)
+        }
+    }
+
+    fun botToe(cnvs: ResizableCanvas){
+        val randomInt = Random.nextInt(0, 8)
+        println(randomInt)
+        println(playerFieldMap)
+        if (playerFieldMap[randomInt] == 0){
+            playerFieldMap[randomInt] = -1
+            cnvs.drawToe(randomInt)
+        } else{
+            botToe(cnvs)
+        }
+    }
+
+    fun botVsbot(cnvs: ResizableCanvas){
+        if (crossOrToe == 0){
+            botToe(cnvs)
+            crossOrToe = 1 - crossOrToe
+            detectVictory(cnvs)
+        }
+        else{
+            botGame(cnvs)
+            crossOrToe = 1 - crossOrToe
+            detectVictory(cnvs)
+        }
     }
 }
