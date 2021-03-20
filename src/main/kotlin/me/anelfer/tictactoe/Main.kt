@@ -62,7 +62,7 @@ class Main : Application()
         bvsb.setOnAction {
             println("BOT VS BOT")
             pane.children.remove(hvsh)
-            pane.children.remove(hvsb)
+                pane.children.remove(hvsb)
             pane.children.remove(bvsb)
 
             lg.modeGame = 3
@@ -74,11 +74,11 @@ class Main : Application()
 
         pane.setOnMouseClicked{ event ->
             if (lg.victoryFlag == 0){
-                lg.ClickOnSquare(event, canvas)
+                lg.humanVsHuman(event, canvas)
             }
             if (lg.victoryFlag == 1){
-                btn.setMinHeight(100.0);
-                btn.setMinWidth(150.0);
+                btn.setMinHeight(80.0);
+                btn.setMinWidth(100.0);
                 btn.setOnAction {
                     lg.restartGame(canvas)
                     pane.children.remove(btn)

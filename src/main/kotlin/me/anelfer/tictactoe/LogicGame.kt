@@ -21,7 +21,7 @@ class LogicGame{
     var victoryNumField: MutableList<Int> = mutableListOf()
     var modeGame = -1 // 0 - human vs human, 1 - human vs human, 3 - bot vs bot
 
-    fun ClickOnSquare(event: MouseEvent, cnvs: ResizableCanvas){
+    fun humanVsHuman(event: MouseEvent, cnvs: ResizableCanvas){
         if (event.sceneX >= cnvs.left &&
             event.sceneX <= cnvs.right &&
             event.sceneY >= cnvs.top &&
@@ -40,47 +40,36 @@ class LogicGame{
             val numField: Int = 1 + ((row - 1) * 3) + (column - 1 )
 
             if (playerFieldMap.get(numField) == 0){
-                for ( i in 1..3){
-                    for (j in 1..3){
-                        if (row == i && column == j){
-                            if (modeGame == 0){
-                                if (crossOrToe == 0){
-                                    cnvs.drawToe(numField)
-                                    crossOrToe = 1 - crossOrToe
-                                    playerFieldMap[numField] = -1
-                                    detectVictory(cnvs)
-                                }
-                                else{
-                                    cnvs.drawCross(numField)
-                                    crossOrToe = 1 - crossOrToe
-                                    playerFieldMap[numField] = 1
-                                    detectVictory(cnvs)
-                                }
-                            }
-                            else if (modeGame == 1){
-                                if (crossOrToe == 0){
-                                    cnvs.drawToe(numField)
-                                    crossOrToe = 1 - crossOrToe
-                                    playerFieldMap[numField] = -1
-                                    detectVictory(cnvs)
-                                }
-                                else{
-                                    botGame(cnvs)
-                                    crossOrToe = 1 - crossOrToe
-                                    detectVictory(cnvs)
-                                }
-                            } else if (modeGame == 3) {
-                                while (victoryFlag != 1){
-                                    botVsbot(cnvs)
-                                    Thread.sleep(1000)
-                                }
-                            }
-                        }
+                if (modeGame == 0) {
+                    if (crossOrToe == 0){
+                        cnvs.drawToe(numField)
+                        crossOrToe = 1 - crossOrToe
+                        playerFieldMap[numField] = -1
+                        detectVictory(cnvs)
                     }
+                    else{
+                        cnvs.drawCross(numField)
+                        crossOrToe = 1 - crossOrToe
+                        playerFieldMap[numField] = 1
+                        detectVictory(cnvs)
+                    }
+                } else if (modeGame == 1){
+                    cnvs.drawToe(numField)
+                    crossOrToe = 1 - crossOrToe
+                    playerFieldMap[numField] = -1
+                    detectVictory(cnvs)
+
+                    if (victoryFlag != 1){
+                        botGame(cnvs)
+                    }
+                } else if (modeGame == 3) {
+                    botGame(cnvs)
                 }
             }
         }
     }
+
+
 
     fun detectVictory(cnvs: ResizableCanvas) {
         val victorySum: MutableList<Int> = mutableListOf(0, 0, 0, 0, 0, 0, 0, 0)
@@ -172,38 +161,30 @@ class LogicGame{
 
     fun botGame(cnvs: ResizableCanvas){
         val randomInt = Random.nextInt(0, 8)
+        var greaterThanZero = 0
         println(randomInt)
         println(playerFieldMap)
-        if (playerFieldMap[randomInt] == 0){
-            playerFieldMap[randomInt] = 1
-            cnvs.drawCross(randomInt)
-        } else{
-            botGame(cnvs)
+        for (i in 0..8){
+            if (playerFieldMap[i] == 0){
+                greaterThanZero++
+            }
         }
-    }
-
-    fun botToe(cnvs: ResizableCanvas){
-        val randomInt = Random.nextInt(0, 8)
-        println(randomInt)
-        println(playerFieldMap)
-        if (playerFieldMap[randomInt] == 0){
-            playerFieldMap[randomInt] = -1
-            cnvs.drawToe(randomInt)
-        } else{
-            botToe(cnvs)
-        }
-    }
-
-    fun botVsbot(cnvs: ResizableCanvas){
-        if (crossOrToe == 0){
-            botToe(cnvs)
-            crossOrToe = 1 - crossOrToe
-            detectVictory(cnvs)
-        }
-        else{
-            botGame(cnvs)
-            crossOrToe = 1 - crossOrToe
-            detectVictory(cnvs)
+        if (greaterThanZero > 0){
+            if (playerFieldMap[randomInt] == 0){
+                if(crossOrToe == 0){
+                    playerFieldMap[randomInt] = -1
+                    cnvs.drawToe(randomInt)
+                    crossOrToe = 1 - crossOrToe
+                    detectVictory(cnvs)
+                } else {
+                    playerFieldMap[randomInt] = 1
+                    cnvs.drawCross(randomInt)
+                    crossOrToe = 1 - crossOrToe
+                    detectVictory(cnvs)
+                }
+            } else{
+                botGame(cnvs)
+            }
         }
     }
 }
